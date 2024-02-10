@@ -11,6 +11,7 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 :Nushell: http://www.nushell.sh/[Nushell]
+:nushell-version: 0.90.1
 :systemd: https://systemd.io/[systemd]
 :Tailscale: https://tailscale.com/[Tailscale]
 
@@ -22,9 +23,64 @@ I've ported over the script to use Nushell and made it possible to add dependenc
 == Install
 
 These are the steps to install Tailscale, Nushell, and the Tailscale Online Target.
-These instructions are intended for Fedora Atomic systems.
+These instructions are intended for Debian and Fedora Atomic systems.
 
-. Add the https://copr.fedorainfracloud.org/coprs/atim/nushell/[Nushell COPR repository].
+. Install Nushell.
++
+Debian::
++
+.. Download the Nushell release tarball.
++
+[,sh,subs="attributes+"]
+----
+curl --location --remote-name https://github.com/nushell/nushell/releases/download/{nushell-version}/nu-{nushell-version}-$(uname --machine)-unknown-linux-gnu.tar.gz
+----
+
+.. Extract the tarball.
++
+[,sh]
+----
+tar xf nu-*-$(uname --machine)-unknown-linux-gnu.tar.gz
+----
+
+.. Install the binaries. 
++
+[,sh]
+----
+sudo mv nu-*-$(uname --machine)-unknown-linux-gnu/nu* /usr/local/bin
+----
+
+.. Clean up the residual files.
++
+[,sh]
+----
+rm --force --recursive nu-*-$(uname --machine)-unknown-linux-gnu*
+----
+
+.. Create the Nushell configuration directory.
++
+[,sh]
+----
+mkdir --parents ~/.config/nushell/
+----
+
+.. Install the default `env.nu` configuration file.
++
+[,sh,subs="attributes+"]
+----
+curl --location --output ~/.config/nushell/config.nu https://raw.githubusercontent.com/nushell/nushell/{nushell-version}/crates/nu-utils/src/sample_config/default_config.nu
+----
+
+.. Install the default `config.nu` configuration file.
++
+[,sh,subs="attributes+"]
+----
+curl --location --output ~/.config/nushell/env.nu https://raw.githubusercontent.com/nushell/nushell/{nushell-version}/crates/nu-utils/src/sample_config/default_env.nu
+----
+
+Fedora Atomic::
++
+.. Add the https://copr.fedorainfracloud.org/coprs/atim/nushell/[Nushell COPR repository].
 +
 [,sh]
 ----
@@ -32,36 +88,77 @@ curl -L https://copr.fedorainfracloud.org/coprs/atim/nushell/repo/fedora/atim-nu
   | sudo tee /etc/yum.repos.d/atim-nushell-fedora.repo
 ----
 
-. Install the Nushell package.
+.. Install the Nushell package.
 +
 [,sh]
 ----
 sudo rpm-ostree install nushell
 ----
 
-. Add the Fedora Tailscale repository to the system.
+. Install Tailscale.
++
+Debian::
++
+.. Install the `lsb-release` utility.
 +
 [,sh]
 ----
-curl -L https://pkgs.tailscale.com/stable/fedora/tailscale.repo \
+sudo apt-get --yes install lsb-release
+----
+
+.. Add the public signing key to the system's keyring.
++
+[,sh]
+----
+curl -fsSL "https://pkgs.tailscale.com/stable/debian/$(lsb_release --codename --short).noarmor.gpg" | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
+----
+
+.. Add the Tailscale repository to the system.
++
+[,sh]
+----
+curl -fsSL "https://pkgs.tailscale.com/stable/debian/$(lsb_release --codename --short).tailscale-keyring.list" | sudo tee /etc/apt/sources.list.d/tailscale.list
+----
+
+.. Refresh the package lists.
++
+[,sh]
+----
+sudo apt-get update
+----
+
+.. Install the Tailscale package.
++
+[,sh]
+----
+sudo apt-get --yes install tailscale
+----
+
+Fedora Atomic::
++
+.. Add the Fedora Tailscale repository to the system.
++
+[,sh]
+----
+curl --location https://pkgs.tailscale.com/stable/fedora/tailscale.repo \
   | sudo tee /etc/yum.repos.d/tailscale.repo
 ----
 
-. Install the Tailscale package.
+.. Install the Tailscale package.
 +
 [,sh]
 ----
 sudo rpm-ostree install tailscale
 ----
 
-. Reboot.
+.. Reboot.
 +
 [,sh]
 ----
 sudo systemctl reboot
 ----
 
-. Enable the Tailscale systemd service.
+.. Enable the Tailscale systemd service.
 +
 [,sh]
 ----
