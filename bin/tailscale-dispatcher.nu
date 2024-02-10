@@ -40,7 +40,7 @@ def "systemctl stop" [
 
 # Run the tailscale status command.
 def "tailscale status" [
-    --peers: bool = false # Value for the --peers option passed to the tailscale status command
+    --peers = false # Value for the --peers option passed to the tailscale status command
 ] {
     let result = (do { ^tailscale status $"--peers=($peers)" --json=true } | complete)
     if $result.exit_code == 0 {
@@ -78,7 +78,7 @@ def is-online [
 # If a specific node is requested, activates or deactivates the tailscale-online@<node hostname>.target systemd unit based on whether the node is online or offline.
 def main [
     node?: string # The hostname of the node to check
-    --user: bool # Whether to use a user target or not
+    --user # Whether to use a user target or not
 ] {
     let target = (
         if $node == null { 
