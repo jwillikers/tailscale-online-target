@@ -1,0 +1,13 @@
+[Unit]
+Description=Checks for Tailscale state of the node %i and syncs with tailscale-online@%i.target
+
+BindsTo=tailscaled.service
+After=tailscaled.service
+
+[Timer]
+OnBootSec=0
+OnUnitInactiveSec=10
+AccuracySec=1
+
+[Install]
+WantedBy=tailscaled.service

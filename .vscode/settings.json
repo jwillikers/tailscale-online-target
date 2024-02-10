@@ -1,0 +1,22 @@
+{
+    "cSpell.words": [
+        "adoc",
+        "atim",
+        "automount",
+        "COPR",
+        "Filesystems",
+        "ifdef",
+        "ifndef",
+        "jwillikers",
+        "netdev",
+        "noatime",
+        "nodev",
+        "noexec",
+        "nofail",
+        "nosuid",
+        "Nushell",
+        "ostree",
+        "Tailscale",
+        "tailscaled"
+    ]
+}

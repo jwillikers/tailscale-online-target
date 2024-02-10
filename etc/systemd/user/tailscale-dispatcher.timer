@@ -1,0 +1,10 @@
+[Unit]
+Description=Checks for Tailscale state and syncs with tailscale-online.target
+
+[Timer]
+OnBootSec=0
+OnUnitInactiveSec=10
+AccuracySec=1
+
+[Install]
+WantedBy=default.target

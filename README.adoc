@@ -1,0 +1,194 @@
+= Tailscale Online Target
+Jordan Williams <jordan@jwillikers.com>
+:experimental:
+:icons: font
+:keywords: network nushell online systemd tailscale target
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+:Nushell: http://www.nushell.sh/[Nushell]
+:systemd: https://systemd.io/[systemd]
+:Tailscale: https://tailscale.com/[Tailscale]
+
+The Tailscale Online Target is a {systemd} `network-online.target` for {Tailscale}.
+This makes it possible to add systemd dependencies on the Tailscale network.
+This is based off of the post https://forum.tailscale.com/t/mount-share-only-if-connected-to-tailscale/3027/6[Mount share only if connected to Tailscale] from the Tailscale Forum.
+I've ported over the script to use Nushell and made it possible to add dependencies on specific devices being available on the Tailscale network.
+
+== Install
+
+These are the steps to install Tailscale, Nushell, and the Tailscale Online Target.
+These instructions are intended for Fedora Atomic systems.
+
+. Add the https://copr.fedorainfracloud.org/coprs/atim/nushell/[Nushell COPR repository].
++
+[,sh]
+----
+curl -L https://copr.fedorainfracloud.org/coprs/atim/nushell/repo/fedora/atim-nushell-fedora.repo \
+  | sudo tee /etc/yum.repos.d/atim-nushell-fedora.repo
+----
+
+. Install the Nushell package.
++
+[,sh]
+----
+sudo rpm-ostree install nushell
+----
+
+. Add the Fedora Tailscale repository to the system.
++
+[,sh]
+----
+curl -L https://pkgs.tailscale.com/stable/fedora/tailscale.repo \
+  | sudo tee /etc/yum.repos.d/tailscale.repo
+----
+
+. Install the Tailscale package.
++
+[,sh]
+----
+sudo rpm-ostree install tailscale
+----
+
+. Reboot.
++
+[,sh]
+----
+sudo systemctl reboot
+----
+
+. Enable the Tailscale systemd service.
++
+[,sh]
+----
+sudo systemctl enable --now tailscaled
+----
+
+. Bring Tailscale online.
++
+[,sh]
+----
+sudo tailscale up
+----
+
+. Clone the repository.
++
+[,sh]
+----
+git clone https://github.com/jwillikers/tailscale-online-target.git
+----
+
+. Change to the repository's directory.
++
+[,sh]
+----
+cd tailscale-online-target
+----
+
+. Install the `tailscale-dispatcher.nu` script.
++
+[,sh]
+----
+sudo cp bin/tailscale-dispatcher.nu /usr/local/bin/
+----
+
+. Install the systemd system units.
++
+[,sh]
+----
+sudo cp etc/systemd/system/* /etc/systemd/system/
+----
+
+. Install the systemd user units.
++
+[,sh]
+----
+sudo cp etc/systemd/user/* /etc/systemd/user/
+----
+
+. Start the desired system timers.
+Here I start the global timer as well as a timer for a specific instance.
++
+System::
++
+[,sh]
+----
+sudo systemctl enable --now tailscale-dispatcher.timer tailscale-dispatcher@meerkat.timer
+----
+
+User::
++
+[,sh]
+----
+systemctl --user enable --now tailscale-dispatcher.timer tailscale-dispatcher@meerkat.timer
+----
+
+. Add a dependency on the specific `tailscale-online.target` as necessary for any systemd units.
+
+=== Dependent Filesystems
+
+Adding a dependency for filesystems is a bit more complicated than a regular systemd unit.
+The instructions here describe how to do add a dependency on the Tailscale Online Target for a filesystem, such as an NFS mount.
+
+fstab:: In `/etc/fstab`, use the `x-systemd.requires` mount option to specify the dependency as in the following example.
++
+./etc/fstab
+[source]
+----
+nfs.jwillikers.io:/container-volumes /var/home/core/container-volumes nfs defaults,_netdev,context="system_u:object_r:container_file_t:s0",noatime,nodev,noexec,nofail,nosuid,soft,user,x-systemd.automount,x-systemd.idle-timeout=5min,x-systemd.mount-timeout=30s,x-systemd.requires=tailscale-online@rockpro64.target 0 0
+----
+
+mount units:: Add the dependency manually to systemd mount and automount units.
++
+--
+[,sh]
+----
+sudo systemctl edit var-home-core-Media.mount
+----
+
+./etc/systemd/system/var-home-core-Media.mount.d/override.conf
+[,systemd]
+----
+[Unit]
+After=tailscale-online@rockpro64.target
+Requires=tailscale-online@rockpro64.target
+----
+
+[,sh]
+----
+sudo systemctl edit var-home-core-Media.automount
+----
+
+./etc/systemd/system/var-home-core-Media.automount.d/override.conf
+[,systemd]
+----
+[Unit]
+After=tailscale-online@rockpro64.target
+Requires=tailscale-online@rockpro64.target
+----
+--
+
+== References
+
+* https://systemd.io/NETWORK_ONLINE/[systemd: Network Configuration Synchronization Points]
+
+== Code of Conduct
+
+The project's Code of Conduct is available in the link:CODE_OF_CONDUCT.adoc[Code of Conduct] file.
+
+== License
+
+Licensed under either of
+
+* Apache License, Version 2.0 (link:LICENSE-APACHE[LICENSE-APACHE] or http://www.apache.org/licenses/LICENSE-2.0)
+* MIT license (link:LICENSE-MIT[LICENSE-MIT] or http://opensource.org/licenses/MIT)
+
+© 2024 Jordan Williams
+
+== Authors
+
+mailto:{email}[{author}]

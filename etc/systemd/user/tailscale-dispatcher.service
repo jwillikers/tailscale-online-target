@@ -1,0 +1,6 @@
+[Unit]
+Description=Checks for Tailscale state and syncs with tailscale-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/tailscale-dispatcher.nu --user

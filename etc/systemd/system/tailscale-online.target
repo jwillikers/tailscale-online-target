@@ -1,0 +1,4 @@
+[Unit]
+Description=Synced with Tailscale status
+BindsTo=tailscaled.service
+After=tailscaled.service
