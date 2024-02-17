@@ -110,14 +110,14 @@ sudo apt-get --yes install lsb-release
 +
 [,sh]
 ----
-curl -fsSL "https://pkgs.tailscale.com/stable/debian/$(lsb_release --codename --short).noarmor.gpg" | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
+curl --fail --location --show-error --silent "https://pkgs.tailscale.com/stable/debian/$(lsb_release --codename --short).noarmor.gpg" | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
 ----
 
 .. Add the Tailscale repository to the system.
 +
 [,sh]
 ----
-curl -fsSL "https://pkgs.tailscale.com/stable/debian/$(lsb_release --codename --short).tailscale-keyring.list" | sudo tee /etc/apt/sources.list.d/tailscale.list
+curl --fail --location --show-error --silent "https://pkgs.tailscale.com/stable/debian/$(lsb_release --codename --short).tailscale-keyring.list" | sudo tee /etc/apt/sources.list.d/tailscale.list
 ----
 
 .. Refresh the package lists.
