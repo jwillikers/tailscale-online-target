@@ -166,10 +166,12 @@ sudo systemctl enable --now tailscaled
 ----
 
 . Bring Tailscale online.
+I use an exit node to route all traffic through Tailscale.
+Modify or omit the `--exit-node` flag as necessary.
 +
 [,sh]
 ----
-sudo tailscale up
+sudo tailscale up --exit-node=fd7a:115c:a1e0:ab12:4843:cd96:625f:e80c
 ----
 
 . Clone the repository.
