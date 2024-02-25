@@ -10,4 +10,4 @@ OnUnitInactiveSec=10
 AccuracySec=1
 
 [Install]
-WantedBy=tailscaled.service
+WantedBy=network-online.target
