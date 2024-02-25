@@ -107,16 +107,16 @@ def main [
 
     if $currently_online != $previously_online {
         if $currently_online {
-            if $user == null {
-                systemctl start $target
-            } else {
+            if $user {
                 systemctl --user start $target
+            } else {
+                systemctl start $target
             }
         } else {
-            if $user == null {
-                systemctl stop $target
-            } else {
+            if $user {
                 systemctl --user stop $target
+            } else {
+                systemctl stop $target
             }
         }
         { online: $currently_online } | save --force $state_file
