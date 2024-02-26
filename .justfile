@@ -16,8 +16,8 @@ install-nushell version="0.90.1":
         sudo mv nu-{{ version }}-{{ arch() }}-unknown-linux-gnu/nu* /usr/local/bin
         rm --force --recursive nu-{{ version }}-{{ arch() }}-unknown-linux-gnu*
         mkdir --parents {{ config_directory() }}/nushell/
-        curl --location --output {{ config_directory() }}/.config/nushell/config.nu https://raw.githubusercontent.com/nushell/nushell/{{ version }}/crates/nu-utils/src/sample_config/default_config.nu
-        curl --location --output {{ config_directory() }}/.config/nushell/env.nu https://raw.githubusercontent.com/nushell/nushell/{{ version }}/crates/nu-utils/src/sample_config/default_env.nu
+        curl --location --output {{ config_directory() }}/nushell/config.nu https://raw.githubusercontent.com/nushell/nushell/{{ version }}/crates/nu-utils/src/sample_config/default_config.nu
+        curl --location --output {{ config_directory() }}/nushell/env.nu https://raw.githubusercontent.com/nushell/nushell/{{ version }}/crates/nu-utils/src/sample_config/default_env.nu
     elif [ "$distro" = "fedora" ]; then
         curl --location https://copr.fedorainfracloud.org/coprs/atim/nushell/repo/fedora/atim-nushell-fedora.repo \
             | sudo tee /etc/yum.repos.d/atim-nushell-fedora.repo
