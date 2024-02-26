@@ -12,9 +12,9 @@ install-nushell version="0.90.1":
     distro=$(awk -F= '$1=="ID" { print $2 ;}' /etc/os-release)
     if [ "$distro" = "debian" ]; then
         curl --location --remote-name https://github.com/nushell/nushell/releases/download/{{ nushell-version }}/nu-{{ nushell-version }}-{{ arch() }}-unknown-linux-gnu.tar.gz
-        tar --extract --file nu-*-{{-unknown-linux-gnu.tar.gz
-        sudo mv nu-*-{{ arch() }}-unknown-linux-gnu/nu* /usr/local/bin
-        rm --force --recursive nu-*-{{ arch() }}-unknown-linux-gnu*
+        tar --extract --file nu-{{ nushell-version }}-{{ arch() }}-unknown-linux-gnu.tar.gz
+        sudo mv nu-{{ nushell-version }}-{{ arch() }}-unknown-linux-gnu/nu* /usr/local/bin
+        rm --force --recursive nu-{{ nushell-version }}-{{ arch() }}-unknown-linux-gnu*
         mkdir --parents {{ config_directory() }}/nushell/
         curl --location --output {{ config_directory() }}/.config/nushell/config.nu https://raw.githubusercontent.com/nushell/nushell/{{ version }}/crates/nu-utils/src/sample_config/default_config.nu
         curl --location --output {{ config_directory() }}/.config/nushell/env.nu https://raw.githubusercontent.com/nushell/nushell/{{ version }}/crates/nu-utils/src/sample_config/default_env.nu
