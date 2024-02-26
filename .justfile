@@ -36,11 +36,11 @@ install-tailscale:
         ^sudo apt-get --yes install lsb-release
         let codename = (^lsb_release --codename --short)
         http get $"https://pkgs.tailscale.com/stable/debian/($codename).noarmor.gpg" | ^sudo tee "/usr/share/keyrings/tailscale-archive-keyring.gpg"
-        http get $"https://pkgs.tailscale.com/stable/debian/($codename).tailscale-keyring.list" | ^sudo tee "/etc/yum.repos.d/tailscale.repo"
+        http get $"https://pkgs.tailscale.com/stable/debian/($codename).tailscale-keyring.list" | ^sudo tee "/etc/apt/sources.list.d/tailscale.list"
         ^sudo apt-get update
         ^sudo apt-get --yes install tailscale
     } else if $distro == "fedora" {
-        http get https://pkgs.tailscale.com/stable/fedora/tailscale.repo | ^sudo tee /etc/yum.repos.d/tailscale.repo
+        http get "https://pkgs.tailscale.com/stable/fedora/tailscale.repo" | ^sudo tee /etc/yum.repos.d/tailscale.repo
         let variant = (open /etc/os-release | lines | par-each {|line| $line | parse "{key}={value}"} | flatten | where key == VARIANT_ID | first | get value)
         if $variant == "container" {
             ^sudo dnf --assumeyes install tailscale
