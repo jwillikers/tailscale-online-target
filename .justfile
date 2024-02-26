@@ -35,8 +35,8 @@ install-tailscale:
     if $distro == "debian" {
         ^sudo apt-get --yes install lsb-release
         let codename = (^lsb_release --codename --short)
-        http get $"https://pkgs.tailscale.com/stable/debian/($codename).noarmor.gpg" | ^sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg
-        http get $"https://pkgs.tailscale.com/stable/debian/($codename).tailscale-keyring.list" | ^sudo tee /etc/yum.repos.d/tailscale.repo
+        http get $"https://pkgs.tailscale.com/stable/debian/($codename).noarmor.gpg" | ^sudo tee "/usr/share/keyrings/tailscale-archive-keyring.gpg"
+        http get $"https://pkgs.tailscale.com/stable/debian/($codename).tailscale-keyring.list" | ^sudo tee "/etc/yum.repos.d/tailscale.repo"
         ^sudo apt-get update
         ^sudo apt-get --yes install tailscale
     } else if $distro == "fedora" {
@@ -44,7 +44,7 @@ install-tailscale:
         let variant = (open /etc/os-release | lines | par-each {|line| $line | parse "{key}={value}"} | flatten | where key == VARIANT_ID | first | get value)
         if $variant == "container" {
             ^sudo dnf --assumeyes install tailscale
-        else if $variant in ["iot", "sericea"] {
+        } else if $variant in ["iot", "sericea"] {
             ^sudo rpm-ostree install tailscale
         }
     }
