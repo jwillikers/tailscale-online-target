@@ -54,3 +54,4 @@ install: install-nushell install-tailscale
     sudo cp bin/tailscale-dispatcher.nu /usr/local/bin/
     sudo cp etc/systemd/system/* /etc/systemd/system/
     sudo cp etc/systemd/user/* /etc/systemd/user/
+    sudo systemctl daemon-reload
