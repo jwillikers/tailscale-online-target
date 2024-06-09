@@ -12,7 +12,7 @@ ifdef::env-github[]
 endif::[]
 :just: https://github.com/casey/just[just]
 :Nushell: http://www.nushell.sh/[Nushell]
-:nushell-version: 0.90.1
+:nushell-version: 0.94.2
 :systemd: https://systemd.io/[systemd]
 :Tailscale: https://tailscale.com/[Tailscale]
 
