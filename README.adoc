@@ -32,7 +32,7 @@ These instructions are intended for Debian and Fedora Atomic systems.
 +
 [,sh]
 ----
-git clone https://github.com/jwillikers/tailscale-online-target.git
+git clone https://codeberg.org/jwillikers/tailscale-online-target.git
 ----
 
 . Change to the repository's directory.
